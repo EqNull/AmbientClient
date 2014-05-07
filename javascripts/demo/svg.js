@@ -1,4 +1,47 @@
-﻿repository.register("scrSvgTest", cControl, function (_super) {
+﻿//<!DOCTYPE html>
+//<html>
+//<body>
+
+//<p><b>Note: </b>Internet Explorer and Safari do not support SVG filters yet!</p>
+
+//<svg height="710" width="910">
+//  <defs>
+//    <filter id="MyFilter" filterUnits="userSpaceOnUse">
+//      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+//      <feOffset in="blur" dx="10" dy="10" result="offsetBlur"/>
+//      <feSpecularLighting in="blur" surfaceScale="5" specularConstant=".75" 
+//specularExponent="20" lighting-color="#666"  
+//result="specOut">
+//<fePointLight x="205" y="100" z="200"/>
+//</feSpecularLighting>
+//<feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut"/>
+//<feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" 
+//k1="0" k2="1" k3="1" k4="0" result="litPaint"/>
+//<feMerge>
+//<feMergeNode in="offsetBlur"/>
+//<feMergeNode in="litPaint"/>
+//</feMerge>
+//</filter>  </defs>
+//<g filter="url(#MyFilter)">
+//<text x="70" y="15" fill="red">I love SVG!</text>
+//<text x="700" y="35" fill="red">I love SVG!</text>
+//<text x="400" y="55" fill="red">I love SVG!</text>
+//<path d="M200,200 L227,275 A80,80 0 0,1 121,186 Z" style="stroke: #222; fill: green; stroke-width: 2px;"></path>
+//<path d="M200,200 L121,186 A80,80 0 0,1 186,121 Z" style="stroke: #222; fill: blue; stroke-width: 2px; cursor: pointer;"></path>
+//<path d="M200,200 L186,121 A80,80 0 0,1 227,275 Z" style="stroke: #222; fill: red; stroke-width: 2px;"></path>
+//<text x="70" y="315" fill="red">I love SVG!</text>
+//<text x="400" y="335" fill="red">I love SVG!</text>
+//<text x="900" y="355" fill="red">I love SVG!</text>
+//</g>
+
+//Sorry, your browser does not support inline SVG.  
+//</svg>
+
+//</body>
+//</html>
+
+
+repository.register("scrSvgTest", cControl, function (_super) {
     return {
         create: function (name) {
             _super.create.call(this, name);

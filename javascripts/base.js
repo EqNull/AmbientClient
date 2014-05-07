@@ -19,9 +19,6 @@ library = function (scope) {
     //    }
     //})
 
-    var argumentarray = function () {
-        return Array.prototype.slice.call(arguments)
-    }
 
     var baseobject = function () { }
 
@@ -144,11 +141,12 @@ library = function (scope) {
 
                 for (var index in _source) {
                     if (_source.hasOwnProperty(index)) {
-                        if (_source[index] == scope.emitevents) {
-                            target[index] = scope.emitevents(mid$(index, 3))
-
-                        } else {
-                            target[index] = _source[index]
+                        switch (_source[index]) {
+                            case scope.emitevents:
+                                target[index] = scope.emitevents(mid$(index, 3))
+                                break;
+                            default:
+                                target[index] = _source[index]
                         }
                     }
                 }
@@ -166,10 +164,6 @@ library = function (scope) {
         }
     })
     
-    scope.isarray = function (value) {
-        return (value && value.constructor == Array);
-    }
-
     scope.arrayinsert = function (array, index, insert) {
         if (insert.constructor == Array) {
             array.splice.apply(array, [index, 0].concat(insert));
@@ -177,6 +171,10 @@ library = function (scope) {
             array.splice(index, 0, insert)
         }
         return array
+    }
+
+    scope.isarray = function (value) {
+        return (value && value.constructor == Array);
     }
 
     scope.isfunction = function (value) {
@@ -500,6 +498,75 @@ library = function (scope) {
         return result;
     }
 
+    //######################################################################
+    //Array
+    //######################################################################
+    var argstoarray = function (args) {
+        return isarray(args) ? args : Array.prototype.slice.call(arguments)
+    }
+
+    scope.pluck = function (objects, key) {
+        var result = []
+
+        for (var i in objects) {
+            if (objects[i][key] != undefined ) { 
+                result.push(objects[i][key])
+            }
+        }
+        return result
+    }
+
+    scope.pluckgroup = function (objects, key, value) {
+        var result = []
+
+        for (var i in objects) {
+            if (objects[i][key] == value) {
+                result.push(objects[i])
+            }
+        }
+        return result
+    }
+
+    scope.pluckdistinct = function (objects, key) {
+        var result = cDictionary
+
+        for (var i in objects) {
+            if (objects[i][key]) {
+                result.push(objects[i][key])
+            }
+        }
+        return result
+    }
+
+    scope.max = function () {
+        return Math.max.apply(null, scope.argstoarray(arguments))
+    }
+
+    //Has to do for now, will be rewritten to a ranked based tree
+    //Dictionary is a sorted list
+    scope.cDictionary = object.create({
+        create: function (key) {
+            this.items = []
+            this.key = key || "key"
+        }
+
+        , add: function (key, value) {
+            var pos = scope.insortedarray(this.items, key, this.key, true)
+
+            if (pos < 0) {
+                var item = isobject(key) ? key : { key: key, value: value }
+
+                this.items.splice(Math.abs(pos), 0, item)
+            }
+        }
+
+        , find: function (key, value) {
+            var pos = scope.insortedarray(this.items, key, this.key, true)
+
+            return pos < 0? null : this.items[pos]
+        }
+    })
+
     scope.inarray = function(ar, search, ignorecase, fieldname) {
         var index;
         var item;
@@ -523,7 +590,7 @@ library = function (scope) {
         return -1;
     }
 
-    scope.insortedarray = function(items, key) {
+    scope.insortedarray = function(items, search, key, ignorecase) {
         var low = 0
         var itemcount = item.length - 1
         var high = itemcount
@@ -536,6 +603,9 @@ library = function (scope) {
         } else {
             while (low <= high) {
                 find = low + Math.round((high - low) / 2)
+
+                item = key? item[find][key] : items[find]
+                if (ignorecase) { item = item.toLowerCase() }
 
                 switch (compare$(key, items[find].toLowerCase())) {
                     case 0:
@@ -703,9 +773,9 @@ library = function (scope) {
 
     };
 
-//######################################################################
-//Math
-//######################################################################
+    //######################################################################
+    //Math
+    //######################################################################
     scope.dec2letter = function (index) {
         var remain = 0;
         var result = ""
